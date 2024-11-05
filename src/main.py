@@ -1,7 +1,8 @@
-from textnode import TextNode, NodeType
+from textnode import TextNode, TextType
+
 
 def main():
-    textnode = TextNode("test text", NodeType.ITALIC, "https://www.boot.dev")
+    textnode = TextNode("test text", TextType.ITALIC)
     print(textnode)
 
 main()
