@@ -43,4 +43,16 @@ class TestLeafNode(unittest.TestCase):
         }
         node = LeafNode("a", "a beautiful link", props=props)
         self.assertEqual(node.to_html(), '<a id="special_link" href="https://www.google.com">a beautiful link</a>')   
+
+    def test_to_html4(self):
+        node = LeafNode(None, "text")
+        self.assertEqual(node.to_html(), "text")
+
+    def test_to_html5(self):
+        node = LeafNode(None, None)
+        self.assertRaises(ValueError, node.to_html)
+
+    def test_to_html6(self):
+        node = LeafNode(None, "")
+        self.assertRaises(ValueError, node.to_html)
     
