@@ -9,6 +9,8 @@ class HTMLNode:
         raise NotImplementedError()
     
     def props_to_html(self):
+        if self.props == None:
+            raise Exception("no props to given")
         return "".join(list(map(lambda key: f' {key}="{self.props[key]}"', self.props)))
     
     def __repr__(self):
