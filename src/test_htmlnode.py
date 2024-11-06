@@ -1,6 +1,6 @@
 import unittest
 
-from htmlnode import HTMLNode, LeafNode
+from htmlnode import HTMLNode, LeafNode, ParentNode
 
 
 class TestHTMLNode(unittest.TestCase):
@@ -56,3 +56,61 @@ class TestLeafNode(unittest.TestCase):
         node = LeafNode(None, "")
         self.assertRaises(ValueError, node.to_html)
     
+
+class TestParentNode(unittest.TestCase):
+    def test_to_html(self):
+        node = ParentNode(
+            "p",
+            [
+                LeafNode("b", "Bold text"),
+                LeafNode(None, "Normal text"),
+                LeafNode("i", "italic text"),
+                LeafNode(None, "Normal text"),
+            ],
+        )
+        self.assertEqual(node.to_html(), "<p><b>Bold text</b>Normal text<i>italic text</i>Normal text</p>")
+    
+    def test_to_html2(self):
+        node = ParentNode(
+            "p",
+            [
+                LeafNode("b", "Bold text"),
+                LeafNode(None, "Normal text"),
+                LeafNode("i", "italic text"),
+                ParentNode(
+                    "div",
+                    [
+                        LeafNode("a", "link text", props={"href": "https://www.google.com"}),
+                        LeafNode("h1", "heading 1 text"),
+                    ],
+                    props={
+                        "class": "cool_div",
+                    }
+                ),
+            ],
+        )
+        self.assertEqual(node.to_html(), '<p><b>Bold text</b>Normal text<i>italic text</i><div class="cool_div"><a href="https://www.google.com">link text</a><h1>heading 1 text</h1></div></p>')
+
+    def test_to_html3(self):
+        node = ParentNode(
+            None,
+            [
+                LeafNode("b", "Bold text"),
+                LeafNode(None, "Normal text"),
+            ],
+        )
+        self.assertRaises(ValueError, node.to_html)
+
+    def test_to_html4(self):
+        node = ParentNode(
+            "div",
+            [],
+        )
+        self.assertRaises(ValueError, node.to_html)
+    
+    def test_to_html5(self):
+        node = ParentNode(
+            "div",
+            None,
+        )
+        self.assertRaises(ValueError, node.to_html)
