@@ -1,6 +1,6 @@
 import unittest
 
-from main import text_node_to_html_node, split_nodes_delimiter
+from main import text_node_to_html_node, split_nodes_delimiter, extract_markdown_images, extract_markdown_links
 from textnode import TextNode, TextType
 from htmlnode import LeafNode
 
@@ -85,3 +85,62 @@ class TestMain(unittest.TestCase):
         delimited_by_italic = split_nodes_delimiter(input_nodes, "*", TextType.ITALIC)
         self.assertEqual(delimited_by_italic, output_nodes)
 
+    def test_extract_markdown_images(self):
+        input = "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)"
+        output = extract_markdown_images(input)
+        expected_output = [("rick roll", "https://i.imgur.com/aKaOqIh.gif"), ("obi wan", "https://i.imgur.com/fJRm4Vk.jpeg")]
+        self.assertEqual(output, expected_output)
+
+    def test_extract_markdown_images2(self):
+        input = "This is text with a [link to youtube](https://youtube.com) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)"
+        output = extract_markdown_images(input)
+        expected_output = [("obi wan", "https://i.imgur.com/fJRm4Vk.jpeg")]
+        self.assertEqual(output, expected_output)
+
+    def test_extract_markdown_images3(self):
+        input = "This is text with no images at all."
+        output = extract_markdown_images(input)
+        expected_output = []
+        self.assertEqual(output, expected_output)
+
+    def test_extract_markdown_images4(self):
+        input = "This is a image with no alt text ![](https://i.imgur.com/aKaOqIh.gif)"
+        output = extract_markdown_images(input)
+        expected_output = [("", "https://i.imgur.com/aKaOqIh.gif")]
+        self.assertEqual(output, expected_output)
+
+    def test_extract_markdown_images5(self):
+        input = "This is a image with no url ![rick roll]()"
+        output = extract_markdown_images(input)
+        expected_output = [("rick roll", "")]
+        self.assertEqual(output, expected_output)
+
+    def test_extract_markdown_links(self):
+        input = "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)"
+        output = extract_markdown_links(input)
+        expected_output = [("to boot dev", "https://www.boot.dev"), ("to youtube", "https://www.youtube.com/@bootdotdev")]
+        self.assertEqual(output, expected_output)
+
+    def test_extract_markdown_links2(self):
+        input = "This is text with an image ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg) and a link [to youtube](https://www.youtube.com/@bootdotdev)"
+        output = extract_markdown_links(input)
+        expected_output = [("to youtube", "https://www.youtube.com/@bootdotdev")]
+        self.assertEqual(output, expected_output)
+
+    def test_extract_markdown_links3(self):
+        input = "This is a text with no link."
+        output = extract_markdown_links(input)
+        expected_output = []
+        self.assertEqual(output, expected_output)
+
+    def test_extract_markdown_links4(self):
+        input = "This is a link with no text [](https://www.youtube.com/@bootdotdev)"
+        output = extract_markdown_links(input)
+        expected_output = [("", "https://www.youtube.com/@bootdotdev")]
+        self.assertEqual(output, expected_output)
+
+    def test_extract_markdown_links5(self):
+        input = "This is a link with no url [obi wan]()"
+        output = extract_markdown_links(input)
+        expected_output = [("obi wan", "")]
+        self.assertEqual(output, expected_output)
