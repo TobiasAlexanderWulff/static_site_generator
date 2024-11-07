@@ -70,7 +70,7 @@ def split_nodes_image(old_nodes):
     return list(filter(lambda node: node.text != "", new_nodes))
 
 
-def split_nodes_links(old_nodes):
+def split_nodes_link(old_nodes):
     new_nodes = []
     for old_node in old_nodes:
         links = extract_markdown_links(old_node.text)
