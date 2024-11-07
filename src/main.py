@@ -54,5 +54,42 @@ def extract_markdown_links(text):
     return re.findall(r"(?<!!)\[(.*?)\]\((.*?)\)", text)
 
 
+def split_nodes_image(old_nodes):
+    new_nodes = []
+    for old_node in old_nodes:
+        images = extract_markdown_images(old_node.text)
+        if len(images) == 0:
+            new_nodes.append(old_node)
+        remaining_text = old_node.text
+        for image in images:
+            image_alt, image_url = image
+            splitted = remaining_text.split(f"![{image_alt}]({image_url})", 1)
+            new_nodes.append(TextNode(splitted[0], old_node.text_type))
+            new_nodes.append(TextNode(image_alt, TextType.IMAGE, url=image_url))
+            remaining_text = splitted[1]
+        new_nodes.append(TextNode(remaining_text, old_node.text_type))
+
+    return list(filter(lambda node: node.text != "", new_nodes))
+
+
+def split_nodes_links(old_nodes):
+    new_nodes = []
+    for old_node in old_nodes:
+        links = extract_markdown_links(old_node.text)
+        if len(links) == 0:
+            new_nodes.append(old_node)
+        remaining_text = old_node.text
+        for link in links:
+            link_text, link_url = link
+            splitted = remaining_text.split(f"[{link_text}]({link_url})", 1)
+            new_nodes.append(TextNode(splitted[0], old_node.text_type))
+            new_nodes.append(TextNode(link_text, TextType.LINK, url=link_url))
+            remaining_text = splitted[1]
+        new_nodes.append(TextNode(remaining_text, old_node.text_type))
+
+    return list(filter(lambda node: node.text != "", new_nodes))
+
+
 if __name__=="__main__":
     main()
+    
