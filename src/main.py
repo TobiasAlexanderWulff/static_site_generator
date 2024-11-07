@@ -62,10 +62,10 @@ def split_nodes_image(old_nodes):
         for image in images:
             image_alt, image_url = image
             splitted = remaining_text.split(f"![{image_alt}]({image_url})", 1)
-            new_nodes.append(TextNode(splitted[0], old_node.text_type))
+            new_nodes.append(TextNode(splitted[0], old_node.text_type, url=old_node.url))
             new_nodes.append(TextNode(image_alt, TextType.IMAGE, url=image_url))
             remaining_text = splitted[1]
-        new_nodes.append(TextNode(remaining_text, old_node.text_type))
+        new_nodes.append(TextNode(remaining_text, old_node.text_type, url=old_node.url))
 
     return list(filter(lambda node: node.text != "", new_nodes))
 
@@ -78,14 +78,13 @@ def split_nodes_link(old_nodes):
         for link in links:
             link_text, link_url = link
             splitted = remaining_text.split(f"[{link_text}]({link_url})", 1)
-            new_nodes.append(TextNode(splitted[0], old_node.text_type))
+            new_nodes.append(TextNode(splitted[0], old_node.text_type, url=old_node.url))
             new_nodes.append(TextNode(link_text, TextType.LINK, url=link_url))
             remaining_text = splitted[1]
-        new_nodes.append(TextNode(remaining_text, old_node.text_type))
+        new_nodes.append(TextNode(remaining_text, old_node.text_type, url=old_node.url))
 
     return list(filter(lambda node: node.text != "", new_nodes))
 
 
 if __name__=="__main__":
     main()
-    
