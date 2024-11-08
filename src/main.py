@@ -118,8 +118,9 @@ def block_to_block_type(block):
     if match:
         return "unordered_list"
 
+    match = True
     for i, line in enumerate(lines):
-        if not re.fullmatch(rf"^{i+1}\.\s.+", line):
+        if not re.match(rf"^{i+1}\.\s.+", line):
             match = False
             break
     if match:
