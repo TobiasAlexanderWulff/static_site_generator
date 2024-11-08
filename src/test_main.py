@@ -353,3 +353,66 @@ class TestMain(unittest.TestCase):
         output = text_to_textnodes(input)
         expected_output = []
         self.assertEqual(output, expected_output)
+
+
+    def test_markdown_to_blocks(self):
+        input = (
+            "# This is a heading\n"
+            + "\n"
+            + "This is a paragraph of text. It has some **bold** and *italic* words inside of it.\n"
+            + "\n"
+            + "* This is the first list item in a list block\n"
+            + "* This is a list item\n"
+            + "* This is another list item"
+            )
+        output = markdown_to_blocks(input)
+        expected = [
+            "# This is a heading",
+            "This is a paragraph of text. It has some **bold** and *italic* words inside of it.",
+            "* This is the first list item in a list block\n" + "* This is a list item\n" + "* This is another list item",
+        ]
+        self.assertEqual(output, expected)
+
+
+    def test_markdown_to_blocks2(self):
+        input = ""
+        output = markdown_to_blocks(input)
+        expected = []
+        self.assertEqual(output, expected)
+
+
+    def test_markdown_to_blocks3(self):
+        input = " "
+        output = markdown_to_blocks(input)
+        expected = []
+        self.assertEqual(output, expected)
+
+
+    def test_markdown_to_blocks4(self):
+        input = (
+            "# This is a heading\n"
+            + "\n"
+            + "\n"
+            + "\n"
+            + "\n"
+            + "\n"
+            + "This is a paragraph of text."
+        )
+        output = markdown_to_blocks(input)
+        expected = [
+            "# This is a heading",
+            "This is a paragraph of text.",
+        ]
+        self.assertEqual(output, expected)
+
+
+    def test_markdown_to_blocks5(self):
+        input = (
+            "\n"
+            + "     # This is a heading     \n"
+        )
+        output = markdown_to_blocks(input)
+        expected = [
+            "# This is a heading",
+        ]
+        self.assertEqual(output, expected)
