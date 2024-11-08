@@ -101,5 +101,27 @@ def markdown_to_blocks(markdown):
     return list(filter(lambda block: block != "", blocks))
 
 
+def block_to_block_type(block):
+    if re.fullmatch(r"^#{1,6}\s.+", block):
+        return "heading"
+    if re.fullmatch(r"^`{3}.+`{3}$", block):
+        return "code"
+    if re.fullmatch(r"^>.+", block):
+        return "quote"
+    if re.fullmatch(r"^[\*-]\s.+", block, re.MULTILINE):
+        return "unordered_list"
+    
+    lines = block.split("\n")
+    match = True
+    for i, line in enumerate(lines):
+        if not re.fullmatch(rf"^{i+1}\.\s.+", line):
+            match = False
+            break
+    if match:
+        return "ordered_list"
+    
+    return "paragraph"
+
+
 if __name__=="__main__":
     main()
