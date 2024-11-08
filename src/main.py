@@ -108,11 +108,16 @@ def block_to_block_type(block):
         return "code"
     if re.fullmatch(r"^>.+", block):
         return "quote"
-    if re.fullmatch(r"^[\*-]\s.+", block, re.MULTILINE):
-        return "unordered_list"
-    
+        
     lines = block.split("\n")
     match = True
+    for line in lines:
+        if not re.match(r"^[\*-]\s.+", line):
+            match = False
+            break
+    if match:
+        return "unordered_list"
+
     for i, line in enumerate(lines):
         if not re.fullmatch(rf"^{i+1}\.\s.+", line):
             match = False
