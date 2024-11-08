@@ -416,3 +416,65 @@ class TestMain(unittest.TestCase):
             "# This is a heading",
         ]
         self.assertEqual(output, expected)
+
+
+    def test_block_to_blocktype(self):
+        input = "This is a paragraph."
+        output = block_to_block_type(input)
+        expected = "paragraph"
+        self.assertEqual(output, expected)
+
+
+    def test_block_to_blocktype2(self):
+        input = ""
+        output = block_to_block_type(input)
+        expected = "paragraph"
+        self.assertEqual(output, expected)
+
+
+    def test_block_to_blocktype3(self):
+        input = "# This is a heading"
+        output = block_to_block_type(input)
+        expected = "heading"
+        self.assertEqual(output, expected)
+
+
+    def test_block_to_blocktype4(self):
+        input = "```\nThis is a block of code\n```"
+        output = block_to_block_type(input)
+        expected = "code"
+        self.assertEqual(output, expected)
+
+
+    def test_block_to_blocktype5(self):
+        input = "```This is a block of code```"
+        output = block_to_block_type(input)
+        expected = "code"
+        self.assertEqual(output, expected)
+
+
+    def test_block_to_blocktype6(self):
+        input = "> This is a quote."
+        output = block_to_block_type(input)
+        expected = "quote"
+        self.assertEqual(output, expected)
+
+
+    def test_block_to_blocktype7(self):
+        input = "- list item\n- item\n* other item"
+        output = block_to_block_type(input)
+        expected = "unordered_list"
+        self.assertEqual(output, expected)
+
+
+    def test_block_to_blocktype8(self):
+        input = "1. First\n2. Second\n3. Third"
+        output = block_to_block_type(input)
+        expected = "ordered_list"
+        self.assertEqual(output, expected)
+
+    def test_block_to_blocktype9(self):
+        input = "1. First\n3. Third\n4. Fourth"
+        output = block_to_block_type(input)
+        expected = "paragraph"
+        self.assertEqual(output, expected)
