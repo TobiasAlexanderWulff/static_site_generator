@@ -104,7 +104,7 @@ def markdown_to_blocks(markdown):
 def block_to_block_type(block):
     if re.fullmatch(r"^#{1,6}\s.+", block):
         return "heading"
-    if re.fullmatch(r"^`{3}.+`{3}$", block):
+    if re.fullmatch(r"^`{3}[\w\s\d\n]+`{3}$", block):
         return "code"
     if re.fullmatch(r"^>.+", block):
         return "quote"
