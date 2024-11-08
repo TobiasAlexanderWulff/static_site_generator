@@ -97,8 +97,8 @@ def text_to_textnodes(text):
 
 
 def markdown_to_blocks(markdown):
-    blocks = list(filter(lambda block: block != "", markdown.split("\n\n")))
-    return list(map(lambda block: block.strip(), blocks))
+    blocks = list(map(lambda block: block.strip(), markdown.split("\n\n")))
+    return list(filter(lambda block: block != "", blocks))
 
 
 if __name__=="__main__":
