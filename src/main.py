@@ -133,5 +133,75 @@ def block_to_block_type(block):
     return "paragraph"
 
 
+def markdown_to_html_node(markdown):
+    blocks = markdown_to_blocks(markdown)
+    html_nodes = []
+    for block in blocks:
+        type = block_to_block_type(block)
+        html_nodes.append(block_to_html_node(type, block))
+    return ParentNode("div", html_nodes)
+
+
+def block_to_html_node(type, block):
+    match type:
+        case "heading":
+            level, text = block.split(" ", 1)
+            return ParentNode(f"h{len(level)}", text_to_children(text))
+        case "code":
+            text = block.strip("`")
+            return ParentNode("pre", [ParentNode("code", text_to_children(text))])
+        case "quote":
+            block = block[2:]
+            if block[0] == ">":
+                children = [block_to_html_node("quote", block)]
+            else:
+                children = text_to_children(block.replace("> ", ""))
+            return ParentNode("blockquote", children)
+        case "unordered_list":
+            children = list(map(lambda line: ParentNode("li", text_to_children(line[2:])), block.split("\n")))
+            return ParentNode("ul", children)
+        case "ordered_list":
+            children = list(map(lambda line: ParentNode("li", text_to_children(line.split(" ", 1)[1])), block.split("\n")))
+            return ParentNode("ol", children)
+        case "paragraph":
+            return ParentNode("p", text_to_children(block))
+        
+
+def text_to_children(text):
+    return list(map(text_node_to_html_node, text_to_textnodes(text)))
+
+
 if __name__=="__main__":
     main()
+    result = markdown_to_html_node("""
+# This is a Heading
+
+This is a simple paragraph.
+
+> This is a quote.
+> With second line.
+
+> > This is a second level quote.
+
+```
+This is inside a code block.
+```
+
+## This is a different header             
+
+This is a paragraph with some **bold** and *italic* text inside.
+And this is a paragraph with some ```code``` embedded.
+Also this is a paragraph with an ![image](https://www.test.org/image.png).
+And this has a [link](https://www.website.de/site#1) embedded.
+
+
+- This is a list
+- :)
+* Hey :D
+
+1. This
+2. list
+3. is
+4. ordered.
+""")
+    print(result.to_html())

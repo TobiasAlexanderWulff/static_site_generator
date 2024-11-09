@@ -34,7 +34,8 @@ class LeafNode(HTMLNode):
 
     def to_html(self):
         if self.value == None or self.value == "":
-            raise ValueError("All leaf nodes must have a value")
+            if self.tag != "img":
+                raise ValueError("All leaf nodes must have a value")
         if self.tag == None:
             return self.value
         return(f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>")
@@ -50,7 +51,7 @@ class ParentNode(HTMLNode):
     def to_html(self):
         if self.tag == None:
             raise ValueError("All parent nodes must have a tag")
-        if self.children == None or len(self.children) == 0:
+        if len(self.children) == 0:
             raise ValueError("All parent nodes must have children")
         return (
             f"<{self.tag}{self.props_to_html()}>"
