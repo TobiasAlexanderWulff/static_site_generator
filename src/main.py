@@ -5,8 +5,7 @@ from htmlnode import LeafNode, ParentNode
 
 
 def main():
-    textnode = TextNode("test text", TextType.ITALIC)
-    print(textnode)
+    return
 
 
 def text_node_to_html_node(text_node):
@@ -104,12 +103,17 @@ def markdown_to_blocks(markdown):
 def block_to_block_type(block):
     if re.fullmatch(r"^#{1,6}\s.+", block):
         return "heading"
-    if re.fullmatch(r"^`{3}[\w\s\d\n]+`{3}$", block):
+    if re.fullmatch(r"^`{3}[^`]+`{3}$", block):
         return "code"
-    if re.fullmatch(r"^>.+", block):
+    
+    lines = block.split("\n")
+    match = True
+    for line in lines:
+        if not re.match(r"^>.+", block):
+            match = False
+    if match:
         return "quote"
         
-    lines = block.split("\n")
     match = True
     for line in lines:
         if not re.match(r"^[\*-]\s.+", line):
